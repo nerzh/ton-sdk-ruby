@@ -1,0 +1,21 @@
+/.bundle/
+/.yardoc
+/Gemfile.lock
+/_yardoc/
+/coverage/
+/doc/
+/pkg/
+/spec/reports/
+/tmp/
+
+# rspec failure tracking
+.rspec_status
+
+/.idea
+/.byebug_history
+*.DS_Store
+/gems
+/.env*
+/TON-SDK
+api.json
+test.rb
