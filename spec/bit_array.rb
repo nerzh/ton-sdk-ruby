@@ -51,11 +51,12 @@ describe TonSdkRuby::BitArray do
   end
 
   it 'test_fill_trailing' do
-    arr = TonSdkRuby::BitArray.new()
+    p Mask.new(1000)
+    # arr = TonSdkRuby::BitArray.new()
     # arr.store_number(index: 2, value: 3, size: 3)
-    arr.store_sint!(value: 1, size: 1)
-    p arr
-    p arr.read_sint!(bits_amount: 1)
+    # arr.store_sint!(value: 1, size: 1)
+    # p arr
+    # p arr.read_sint!(bits_amount: 1)
     # expect().to eq("")
   end
 end
