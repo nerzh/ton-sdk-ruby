@@ -51,7 +51,8 @@ describe TonSdkRuby::BitArray do
   end
 
   it 'test_fill_trailing' do
-    p Mask.new(1000)
+    # p Mask.new(1000)
+    p augment(bits: [1, 0 ,1], divider: 8)
     # arr = TonSdkRuby::BitArray.new()
     # arr.store_number(index: 2, value: 3, size: 3)
     # arr.store_sint!(value: 1, size: 1)
