@@ -11,4 +11,14 @@ module TonSdkRuby
 
     bits
   end
+
+  def rollback(bits: [])
+    index = bits.last(7).reverse.index(1)
+
+    if index.nil?
+      raise StandardError.new('Incorrectly augmented bits.')
+    end
+
+    bits[0, bits.length - (index + 1)]
+  end
 end
