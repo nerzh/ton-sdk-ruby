@@ -84,16 +84,16 @@ module TonSdkRuby
       self.each { |key, value| callback.call(key, value) }
     end
 
-    protected def get_raw(key)
+    def get_raw(key)
       hashmap[key.join('')]
     end
 
-    protected def set_raw(key, value)
+    def set_raw(key, value)
       hashmap[key.join('')] = value
       self
     end
 
-    protected def sort_hashmap
+    def sort_hashmap
       sorted = hashmap.reduce([]) do |acc, (bitstring, value)|
         key = bitstring.chars.map(&:to_i)
         # Sort keys by DESC to serialize labels correctly later
@@ -107,7 +107,7 @@ module TonSdkRuby
       sorted.map { |el| [el[:key], el[:value]] }
     end
 
-    protected def serialize
+    def serialize
       nodes = sort_hashmap
 
       if nodes.empty?
@@ -117,7 +117,7 @@ module TonSdkRuby
       Hashmap.serialize_edge(nodes)
     end
 
-    protected def self.serialize_edge(nodes)
+    def self.serialize_edge(nodes)
       # hme_empty$0
       if nodes.empty?
         label = serialize_label_short([])
@@ -157,7 +157,7 @@ module TonSdkRuby
       edge.cell
     end
 
-    protected def self.serialize_fork(nodes)
+    def self.serialize_fork(nodes)
       # Serialize nodes to edges
       nodes.reduce([[], []]) do |acc, (key, value)|
         # Sort nodes by left/right edges
@@ -167,11 +167,11 @@ module TonSdkRuby
       end
     end
 
-    protected def self.serialize_leaf(node)
+    def self.serialize_leaf(node)
       node[1]
     end
 
-    protected def self.serialize_label(nodes)
+    def self.serialize_label(nodes)
       # Each label can always be serialized in at least two different fashions, using
       # hml_short or hml_long constructors. Usually the shortest serialization (and
       # in the case of a tie—the lexicographically smallest among the shortest) is
@@ -215,7 +215,7 @@ module TonSdkRuby
       choosen[:label]
     end
 
-    protected def self.serialize_label_short(bits)
+    def self.serialize_label_short(bits)
       label = Builder.new
 
       label.store_bit(0)
@@ -226,7 +226,7 @@ module TonSdkRuby
       label.bits
     end
 
-    protected def self.serialize_label_long(bits, m)
+    def self.serialize_label_long(bits, m)
       label = Builder.new
 
       label.store_bits([1, 0])
@@ -236,7 +236,7 @@ module TonSdkRuby
       label.bits
     end
 
-    protected def self.serialize_label_same(bits, m)
+    def self.serialize_label_same(bits, m)
       label = Builder.new
 
       label.store_bits([1, 1])

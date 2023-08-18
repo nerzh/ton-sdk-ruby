@@ -1,5 +1,4 @@
 require 'base64'
-require 'digest/crc16'
 
 module TonSdkRuby
 
