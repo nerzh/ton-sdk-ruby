@@ -1,6 +1,8 @@
 module TonSdkRuby
   class Mask
 
+    attr_accessor :hash_index, :hash_count, :value
+
     def initialize(mask)
       if mask.class.to_s.downcase == "mask"
         @value = mask.value
@@ -8,27 +10,15 @@ module TonSdkRuby
         @value = mask
       end
 
-      @hashIndex = countSetBits(value)
-      @hashCount = @hashIndex + 1
-    end
-
-    def value
-      @value
+      @hash_index = count_set_bits(value)
+      @hash_count = @hash_index + 1
     end
 
     def level
       32 - clz(value)
     end
 
-    def hashIndex
-      @hashIndex
-    end
-
-    def hashCount
-      @hashCount
-    end
-
-    def isSignificant(level)
+    def is_significant(level)
       level == 0 || (self.value >> (level - 1)) % 2 != 0
     end
 
@@ -47,7 +37,7 @@ module TonSdkRuby
       end
     end
 
-    def countSetBits(n)
+    def count_set_bits(n)
       n = n - ((n >> 1) & 0x55555555)
       n = (n & 0x33333333) + ((n >> 2) & 0x33333333)
       ((n + (n >> 4) & 0xF0F0F0F) * 0x1010101) >> 24
