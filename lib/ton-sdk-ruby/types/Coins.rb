@@ -1,3 +1,5 @@
+require 'bigdecimal'
+
 module TonSdkRuby
 
   class Coins
@@ -158,7 +160,7 @@ module TonSdkRuby
     end
 
     def self.valid?(value)
-      typeof(value) == 'string' || typeof(value) == 'number' || typeof(value) == 'bigint'
+      value.class == String || value.class == Integer
     end
 
     def self.coins?(value)
@@ -167,11 +169,19 @@ module TonSdkRuby
 
     def self.convertable?(value)
       begin
-        Decimal.new(value.to_s)
+        BigDecimal(value.to_s)
         true
       rescue StandardError
         false
       end
     end
+  end
+end
+
+class BigDecimal
+  def dp
+    digits_after_comma = self.to_s("F").split(".").last
+    return 0 if digits_after_comma == '0'
+    digits_after_comma.size
   end
 end
