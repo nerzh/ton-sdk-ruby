@@ -7,7 +7,7 @@ module TonSdkRuby
   end
 
   def hex_to_bits(hex)
-    hex.split('').flat_map do |val|
+    result = hex.split('').flat_map do |val|
       chunk = val.to_i(16)
                  .to_s(2)
                  .rjust(4, '0')
@@ -16,6 +16,8 @@ module TonSdkRuby
 
       chunk
     end
+
+    result
   end
 
   def bytes_to_uint(bytes)
@@ -34,13 +36,13 @@ module TonSdkRuby
   end
 
   def hex_to_bytes(hex)
-    hex.scan(/.{1,2}/).map { |byte| byte.to_i(16) }.pack("C*")
+    hex.scan(/.{1,2}/).map { |byte| byte.to_i(16) }
   end
 
   def bytes_to_bits(data)
-    bytes = data.pack("C*")
+    bytes = data.is_a?(Array) ? data : data.unpack("C*")
 
-    bytes.reduce([]) do |acc, uint|
+    result = bytes.reduce([]) do |acc, uint|
       chunk = uint.to_s(2)
                   .rjust(8, '0')
                   .split('')
@@ -48,12 +50,12 @@ module TonSdkRuby
 
       acc.concat(chunk)
     end
+    result
   end
 
   def bits_to_hex(bits)
     bitstring = bits.join('')
     hex = bitstring.scan(/.{1,4}/).map { |el| el.rjust(4, '0').to_i(2).to_s(16) }
-
     hex.join('')
   end
 
@@ -64,7 +66,7 @@ module TonSdkRuby
   end
 
   def bytes_to_hex(bytes)
-    bytes.map { |uint| uint_to_hex(uint) }.join('')
+    bytes.unpack('H*').first
   end
 
   def bytes_to_string(bytes)
@@ -76,23 +78,14 @@ module TonSdkRuby
   end
 
   def bytes_to_base64(data)
-    bytes = data.pack("C*")
+    bytes = data.is_a?(String) ? data.unpack("C*") : data
     str = bytes.map(&:chr).join
 
-    if is_node_env
-      Base64.strict_encode64(str)
-    else
-      [str].pack("m")
-    end
+    Base64.strict_encode64(str)
   end
 
   def base64_to_bytes(base64)
-    binary = if is_node_env
-               Base64.strict_decode64(base64)
-             else
-               Base64.decode64(base64)
-             end
-
+    binary = Base64.strict_decode64(base64)
     binary.bytes
   end
 
