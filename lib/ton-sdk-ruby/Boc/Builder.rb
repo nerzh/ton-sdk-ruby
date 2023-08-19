@@ -10,17 +10,54 @@ module TonSdkRuby
       size - bits.length
     end
 
-    def initialize(size: 1023)
+    def initialize(size = 1023)
       @size = size
       @bits = []
       @refs = []
+    end
+
+    def store_slice(slice)
+      check_slice_type(slice)
+
+      bits = slice.bits
+      refs = slice.refs
+
+      check_bits_overflow(bits.length)
+      check_refs_overflow(refs.length)
+      store_bits(bits)
+
+      refs.each { |ref| store_ref(ref) }
+
+      self
+    end
+
+    def store_ref(ref)
+      Builder.check_refs_type([ref])
+      check_refs_overflow(1)
+      @refs.push(ref)
+
+      self
+    end
+
+    def store_maybe_ref(ref = nil)
+      return store_bit(0) unless ref
+      store_bit(1).store_ref(ref)
+    end
+
+    def store_refs(refs)
+      Builder.check_refs_type(refs)
+      check_refs_overflow(refs.length)
+      @refs.push(*refs)
+
+      self
     end
 
     def store_bit(bit)
       value = Builder.check_bits_type_and_normalize([bit])
 
       check_bits_overflow(1)
-      @bits.concat!(value)
+      # p "+bit #{value}"
+      @bits += value
 
       self
     end
@@ -29,7 +66,8 @@ module TonSdkRuby
       value = Builder.check_bits_type_and_normalize(bits)
 
       check_bits_overflow(value.length)
-      @bits.concat!(value)
+      # p "+bits #{value}"
+      @bits += value
 
       self
     end
@@ -49,7 +87,6 @@ module TonSdkRuby
 
     def store_uint(value, size)
       uint = value.is_a?(Integer) ? value : value.to_i
-
       if uint < 0 || uint >= (1 << size)
         raise StandardError.new("Builder: can't store an UInt, because its value allocates more space than provided.")
       end
@@ -79,7 +116,7 @@ module TonSdkRuby
     def store_var_uint(value, length)
       uint = value.is_a?(Integer) ? value : value.to_i
       size = (Math.log2(length)).ceil
-      size_bytes = (uint.to_s(2).length / 8).ceil
+      size_bytes = (uint.to_s(2).length.to_f / 8).ceil
       size_bits = size_bytes * 8
 
       check_bits_overflow(size + size_bits)
@@ -95,7 +132,6 @@ module TonSdkRuby
 
     def store_bytes(value)
       check_bits_overflow(value.length * 8)
-
       value.each { |byte| store_uint(byte, 8) }
 
       self
@@ -109,11 +145,87 @@ module TonSdkRuby
       self
     end
 
+    def store_address(address)
+      if address.nil?
+        store_bits([0, 0])
+        return self
+      end
+
+      anycast = 0
+      address_bits_size = 2 + 1 + 8 + 256
+
+      Builder.check_address_type(address)
+      check_bits_overflow(address_bits_size)
+      store_bits([1, 0])
+      store_uint(anycast, 1)
+      store_int(address.workchain, 8)
+      store_bytes(address.hash)
+
+      self
+    end
+
+    def store_coins(coins)
+      if coins.negative?
+        raise 'Builder: coins value can\'t be negative.'
+      end
+
+      nano = coins.to_nano
+
+      # https://github.com/ton-blockchain/ton/blob/master/crypto/block/block.tlb#L116
+      store_var_uint(nano, 16)
+
+      self
+    end
+
+    def store_dict(hashmap = nil)
+      return store_bit(0) unless hashmap
+
+      slice = hashmap.cell.parse
+      store_slice(slice)
+
+      self
+    end
+
+    def clone
+      data = Builder.new(size)
+
+      # Use getters to get copy of arrays
+      data.store_bits(bits)
+      refs.each { |ref| data.store_ref(ref) }
+
+      data
+    end
+
+    def cell(type = CellType::Ordinary)
+      # Use getters to get copies of arrays
+      cell = Cell.new(bits: bits, refs: refs, type: type)
+
+      cell
+    end
+
     private
+
+    def self.check_slice_type(slice)
+      unless slice.is_a?(Slice)
+        raise StandardError, "Builder: can't store slice, because it's type is not a Slice."
+      end
+    end
+
+    def self.check_address_type(address)
+      unless address.is_a?(Address)
+        raise StandardError, "Builder: can't store address, because it's type is not an Address."
+      end
+    end
 
     def check_bits_overflow(size)
       if size > remainder
         raise StandardError.new("Builder: bits overflow. Can't add #{size} bits. Only #{remainder} bits left.")
+      end
+    end
+
+    def self.check_refs_type(refs)
+      unless refs.all? { |cell| cell.is_a?(Cell) }
+        raise StandardError, "Builder: can't store ref, because it's type is not a Cell."
       end
     end
 
