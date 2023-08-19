@@ -99,7 +99,7 @@ module TonSdkRuby
     def store_var_int(value, length)
       int = value.is_a?(Integer) ? value : value.to_i
       size = (Math.log2(length)).ceil
-      size_bytes = (int.to_s(2).length / 8).ceil
+      size_bytes = (int.to_s(2).length.to_f / 8).ceil
       size_bits = size_bytes * 8
 
       check_bits_overflow(size + size_bits)
