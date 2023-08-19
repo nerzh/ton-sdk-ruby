@@ -182,14 +182,18 @@ module TonSdkRuby
 
     def initialize(options = {})
       options = { bits: [], refs: [], type: CellType::Ordinary }.merge(options)
-      validate, mask = get_mapper(options[:type])
+
+      mapper = get_mapper(options[:type])
+      validate = mapper[:validate]
+      mask = mapper[:mask]
 
       validate.call(options[:bits], options[:refs])
-
       @mask = mask.call(options[:bits], options[:refs])
       @type = options[:type]
       @bits = options[:bits]
       @refs = options[:refs]
+      @depths = {}
+      @hashes = {}
 
       init()
     end
@@ -314,17 +318,14 @@ module TonSdkRuby
       hash_index_offset = is_pruned_branch ? @mask.hash_count - 1 : 0
 
       hash_index = 0
-
       (0..@mask.level).each do |level_index|
         next unless @mask.is_significant(level_index)
-
         next if hash_index < hash_index_offset
 
         if (hash_index == hash_index_offset && level_index != 0 && !is_pruned_branch) ||
           (hash_index != hash_index_offset && level_index == 0 && is_pruned_branch)
           raise 'Can\'t deserialize cell'
         end
-
         ref_level = level_index + (is_merkle ? 1 : 0)
         refs_descriptor = get_refs_descriptor(@mask.apply(level_index))
         bits_descriptor = get_bits_descriptor
@@ -333,11 +334,9 @@ module TonSdkRuby
                else
                  get_augmented_bits
                end
-
         depth_repr = []
         hash_repr = []
         depth = 0
-
         @refs.each do |ref|
           ref_depth = ref.depth(ref_level)
           ref_hash = ref.hash(ref_level)
@@ -346,18 +345,15 @@ module TonSdkRuby
           hash_repr.concat(hex_to_bits(ref_hash))
           depth = [depth, ref_depth].max
         end
-
         representation = refs_descriptor + bits_descriptor + data + depth_repr + hash_repr
 
         if @refs.length.positive? && depth >= 1024
           raise 'Cell depth can\'t be more than 1024'
         end
-
         dest = hash_index - hash_index_offset
 
         @depths[dest] = depth + (has_refs ? 1 : 0)
         @hashes[dest] = sha256(bits_to_bytes(representation))
-
         hash_index += 1
       end
     end
