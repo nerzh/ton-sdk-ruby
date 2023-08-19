@@ -17,6 +17,7 @@ require_relative './ton-sdk-ruby/Boc/Cell'
 require_relative './ton-sdk-ruby/Boc/Hashmap'
 require_relative './ton-sdk-ruby/Boc/Slice'
 require_relative './ton-sdk-ruby/Boc/Builder'
+require_relative './ton-sdk-ruby/Boc/Serializer'
 
 
 module TonSdkRuby
