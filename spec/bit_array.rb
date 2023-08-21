@@ -22,7 +22,7 @@ describe TonSdkRuby::BitArray do
   end
 
   # it 'test_store_number!' do
-  #   arr = TonSdkRuby::BitArray.new()
+  #   arr = TonSdkRuby::bit_array.new()
   #   expect(arr.send(:store_number!, index: 0, value: 3, size: 3)).to eq([false, true, true])
     
   #   arr.send(:store_number!, index: 3, value: 3, size: 3)
@@ -38,7 +38,7 @@ describe TonSdkRuby::BitArray do
   end
 
   # it 'test_store_byte!' do
-  #   arr = TonSdkRuby::BitArray.new(size: 2, value: true)
+  #   arr = TonSdkRuby::bit_array.new(size: 2, value: true)
   #   expect(arr.store_byte!(value: 3)).to eq([false, false, false, false, false, false, true, true])
 
   #   expect(arr.store_byte!(value: 3)).to eq([false, false, false, false, false, false, true, true, false, false, false, false, false, false, true, true])
@@ -53,7 +53,7 @@ describe TonSdkRuby::BitArray do
   it 'test_fill_trailing' do
     # p Mask.new(1000)
     p augment(bits: [1, 0 ,1], divider: 8)
-    # arr = TonSdkRuby::BitArray.new()
+    # arr = TonSdkRuby::bit_array.new()
     # arr.store_number(index: 2, value: 3, size: 3)
     # arr.store_sint!(value: 1, size: 1)
     # p arr

@@ -7,23 +7,13 @@ describe TonSdkRuby do
   end
 
   it 'manual_test' do
+    p TonSdkRuby
 
-    b = Builder.new
-    b
-      .store_uint(200, 30)
-      # .store_coins(Coins.new(1_000_000))
+    seed = generate_words(24)
 
-    b2 = Builder.new.store_ref(b.cell)
+    p seed.join(' ')
 
-    # b2.cell
-    bytes =  TonSdkRuby.serialize(b2.cell)
-
-    p TonSdkRuby.bytes_to_base64(bytes)
-    p ""
-    pp TonSdkRuby.deserialize(bytes)
-
-    # p augment(bits: [1, 0 ,1], divider: 8)
-    # p rollback(bits: [0,0,0])
+    byebug
   end
 end
 
