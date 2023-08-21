@@ -29,17 +29,13 @@ module TonSdkRuby
     }
   end
 
-  def bits_to_int_uint(bits, options: { type: 'int' })
-    type = options[:type] || 'uint'
+  def bits_to_int_uint(bits, options = { type: 'int' })
+    type = options[:type].to_s || 'uint'
     result = if type == 'uint'
                bits_to_big_uint(bits)
              else
                bits_to_big_int(bits)
              end
-
-    unless result[:is_safe]
-      raise 'loaded value does not fit max/min safe integer value, use alternative BigInt methods'
-    end
 
     result[:value]
   end
