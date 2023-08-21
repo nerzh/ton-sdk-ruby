@@ -1,14 +1,17 @@
 module TonSdkRuby
 
   class Slice
-    attr_accessor :bits, :refs
-    private :bits, :refs
-
-    private_class_method :new
-
     def initialize(bits, refs)
       @bits = bits
       @refs = refs
+    end
+
+    def bits
+      Array.new(@bits)
+    end
+
+    def refs
+      Array.new(@refs)
     end
 
     def skip(size)
@@ -92,12 +95,12 @@ module TonSdkRuby
 
     def load_int(size)
       bits = load_bits(size)
-      bits_to_int_uint(bits, type: :int)
+      bits_to_int_uint(bits, { type: :int })
     end
 
     def preload_int(size)
       bits = preload_bits(size)
-      bits_to_int_uint(bits, type: :int)
+      bits_to_int_uint(bits, { type: :int })
     end
 
     def load_big_int(size)
@@ -112,12 +115,13 @@ module TonSdkRuby
 
     def load_uint(size)
       bits = load_bits(size)
-      bits_to_int_uint(bits, type: :uint)
+
+      bits_to_int_uint(bits, { type: :uint })
     end
 
     def preload_uint(size)
       bits = preload_bits(size)
-      bits_to_int_uint(bits, type: :uint)
+      bits_to_int_uint(bits, { type: :uint })
     end
 
     def load_big_uint(size)
@@ -148,7 +152,7 @@ module TonSdkRuby
       size_bits = size_bytes * 8
       bits = preload_bits(size + size_bits)[size..-1]
 
-      bits_to_int_uint(bits, type: :int)
+      bits_to_int_uint(bits, { type: :int })
     end
 
     def load_var_big_int(length)
@@ -189,7 +193,7 @@ module TonSdkRuby
       size_bits = size_bytes * 8
       bits = preload_bits(size + size_bits)[size..-1]
 
-      bits_to_int_uint(bits, type: :uint)
+      bits_to_int_uint(bits, { type: :uint })
     end
 
     def load_var_big_uint(length)
@@ -199,7 +203,7 @@ module TonSdkRuby
 
       raise 'Slice: can\'t perform loadVarBigUint – not enough bits' if @bits.length < size_bits + size
 
-      bits = load_bits(size_bits)
+      bits = skip(size).load_bits(size_bits)
       bits_to_big_uint(bits)[:value]
     end
 
@@ -212,12 +216,12 @@ module TonSdkRuby
     end
 
     def load_bytes(size)
-      bits = load_bits(size)
+      bits = load_bits(size * 8)
       bits_to_bytes(bits)
     end
 
     def preload_bytes(size)
-      bits = preload_bits(size)
+      bits = preload_bits(size * 8)
       bits_to_bytes(bits)
     end
 
@@ -274,7 +278,7 @@ module TonSdkRuby
         # Anycast is currently unused
         _anycast = bits.shift
 
-        workchain = bits_to_int_uint(bits.shift(8), type: 'int')
+        workchain = bits_to_int_uint(bits.shift(8), { type: 'int' })
         hash = bits_to_hex(bits.shift(256))
         raw = "#{workchain}:#{hash}"
 
