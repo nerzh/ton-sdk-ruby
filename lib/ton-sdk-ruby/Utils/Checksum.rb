@@ -2,7 +2,7 @@ module TonSdkRuby
 
   def crc16(data)
     poly = 0x1021
-    bytes = data.pack("C*")
+    bytes = data.is_a?(String) ? data.unpack('C*') : Array.new(data)
     int16 = bytes.reduce(0) do |acc, el|
       crc = acc ^ (el << 8)
 
@@ -23,7 +23,7 @@ module TonSdkRuby
 
   def crc32c(data)
     poly = 0x82f63b78
-    bytes = data
+    bytes = data.is_a?(String) ? data.unpack('C*') : Array.new(data)
 
     int32 = bytes.reduce(0 ^ 0xffffffff) do |acc, el|
       crc = acc ^ el
