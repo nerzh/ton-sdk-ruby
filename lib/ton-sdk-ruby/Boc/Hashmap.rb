@@ -9,19 +9,21 @@ module TonSdkRuby
 
       @hashmap = {}
       @key_size = key_size
-      @serialize_key = serializers.fetch(:key, ->(key) { key })
-      @serialize_value = serializers.fetch(:value, ->(value) { value })
-      @deserialize_key = deserializers.fetch(:key, ->(key) { key })
-      @deserialize_value = deserializers.fetch(:value, ->(value) { value })
+      @serialize_key = serializers.fetch(:key, -> (key) { key })
+      @serialize_value = serializers.fetch(:value, -> (value) { value })
+      @deserialize_key = deserializers.fetch(:key, -> (key) { key })
+      @deserialize_value = deserializers.fetch(:value, -> (value) { value })
     end
 
     def each
+      result = []
       @hashmap.each do |k, v|
         key = deserialize_key(k.chars.map(&:to_i))
         value = deserialize_value(v)
 
-        yield [key, value]
+        result << (yield [key, value])
       end
+      result
     end
 
     def get(key)
@@ -38,7 +40,6 @@ module TonSdkRuby
     def set(key, value)
       k = serialize_key(key).join('')
       v = serialize_value(value)
-
       @hashmap[k] = v
 
       self
@@ -183,7 +184,15 @@ module TonSdkRuby
       last = nodes[nodes.length - 1][0]
       # m = length at most possible bits of n (key)
       m = first.length
-      same_bits_index = first.find_index { |bit, i| bit != last[i] }
+
+      same_bits_index = nil
+      first.each_with_index do |el, index|
+        if el != last[index]
+          same_bits_index = index
+          break
+        end
+      end
+
       same_bits_length = same_bits_index.nil? ? first.length : same_bits_index
 
       if first[0] != last[0] || m == 0
@@ -192,7 +201,7 @@ module TonSdkRuby
       end
 
       label = first[0, same_bits_length]
-      repeated = label.join('').match(/(^0+)|(^1+)/)[0].split('').map { |b| b.to_i as Bit }
+      repeated = label.join('').match(/(^0+)|(^1+)/)[0].split('').map { |b| b.to_i }
       label_short = serialize_label_short(label)
       label_long = serialize_label_long(label, m)
       label_same = nodes.length > 1 && repeated.length > 1 ? serialize_label_same(repeated, m) : nil
