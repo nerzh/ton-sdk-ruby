@@ -17,7 +17,7 @@ module TonSdkRuby
     end
 
     def store_slice(slice)
-      check_slice_type(slice)
+      Builder.check_slice_type(slice)
 
       bits = slice.bits
       refs = slice.refs
@@ -131,7 +131,7 @@ module TonSdkRuby
     end
 
     def store_bytes(value)
-      check_bits_overflow(value.length * 8)
+      check_bits_overflow(value.size * 8)
       value.each { |byte| store_uint(byte, 8) }
 
       self
