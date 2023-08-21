@@ -55,6 +55,10 @@ module TonSdkRuby
       data = tag
       test_only = (data & FLAG_TEST_ONLY) != 0
 
+      if test_only
+        data ^= FLAG_TEST_ONLY
+      end
+
       if ![FLAG_BOUNCEABLE, FLAG_NON_BOUNCEABLE].include?(data)
         raise 'Address: bad address tag.'
       end
@@ -117,7 +121,7 @@ module TonSdkRuby
     def self.parse_encoded(value)
       base64 = value.tr('-', '+').tr('_', '/')
       bytes = base64_to_bytes(base64)
-      data = bytes.bytes.to_a
+      data = Array.new(bytes)
       address = data.shift(34)
       checksum = data.shift(2)
       crc = crc16_bytes_be(address)
@@ -125,10 +129,16 @@ module TonSdkRuby
       raise 'Address: can\'t parse address. Wrong checksum.' unless bytes_compare(crc, checksum)
 
       buffer = address.shift(2).pack('C2')
-      tag, workchain = buffer.unpack('CS>')
+
+      tag_and_wc = buffer.unpack('CS>')
+      tag = tag_and_wc.first
+      workchain = tag_and_wc.last.to_i
+
       hash = address.shift(32)
 
-      bounceable, test_only = decode_tag(tag)
+      decoded_tag = decode_tag(tag)
+      bounceable = decoded_tag[:bounceable]
+      test_only = decoded_tag[:test_only]
 
       {
         bounceable: bounceable,
@@ -167,11 +177,11 @@ module TonSdkRuby
       }
     end
 
-    def self.is_address(address)
+    def self.is_address?(address)
       address.is_a?(Address)
     end
 
-    def self.is_valid(address)
+    def self.is_valid?(address)
       begin
         new(address)
         true
