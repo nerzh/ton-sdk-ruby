@@ -216,7 +216,7 @@ module TonSdkRuby
 
   def deserialize(data, check_merkle_proofs = false)
     has_merkle_proofs = false
-    bytes = data.to_a
+    bytes = Array.new(data)
     pointers = []
     header = deserialize_header(bytes)
 
