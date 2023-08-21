@@ -128,7 +128,7 @@ module TonSdkRuby
     end
 
     def to_nano
-      @value.to_i.to_s
+      @value.to_i
     end
 
 
