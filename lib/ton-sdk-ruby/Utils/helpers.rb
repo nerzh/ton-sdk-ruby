@@ -66,11 +66,20 @@ module TonSdkRuby
   end
 
   def bytes_to_hex(bytes)
-    bytes.unpack('H*').first
+    if bytes.is_a?(Array)
+      bytes.pack('C*').unpack('H*').first
+    else
+      bytes.unpack('H*').first
+    end
   end
 
   def bytes_to_string(bytes)
     bytes.pack("C*").force_encoding('utf-8')
+  end
+
+  def bytes_to_data_string(bytes)
+    raise 'Only byte array' unless bytes.is_a?(Array)
+    bytes.pack('C*')
   end
 
   def string_to_bytes(value)
