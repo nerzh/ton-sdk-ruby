@@ -7,13 +7,15 @@ describe TonSdkRuby do
   end
 
   it 'manual_test' do
-    p TonSdkRuby
+    # p TonSdkRuby
 
-    seed = generate_words(24)
+    # seed = generate_words(24)
 
-    p seed.join(' ')
+    # p seed.join(' ')
 
-    byebug
+    m = TonMnemonic.new()
+    p m.seed
+    p m.keys
   end
 end
 
