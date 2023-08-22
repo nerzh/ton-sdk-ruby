@@ -5,11 +5,12 @@ require 'openssl'
 require 'openssl/pkcs5'
 
 module TonSdkRuby
-
+  
   private def derive_checksum_bits_bip39(entropy_bytes)
     cs = (entropy_bytes.size * 8) / 32
     hex = sha256(entropy_bytes)
     bits = hex_to_bits(hex)
+    
 
     bits.slice(0, cs)
   end
