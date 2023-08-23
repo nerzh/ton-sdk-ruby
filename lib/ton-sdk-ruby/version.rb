@@ -1,4 +1,4 @@
 module TonSdkRuby
-  VERSION = "1.1.65"
+  VERSION = "0.0.1"
 end
 
