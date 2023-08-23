@@ -225,11 +225,6 @@ module TonSdkRuby
       header[:cells_data] = deserialized[:remainder]
       pointers.push(deserialized[:pointer])
     end
-    # header[:cells_data].each_with_index do |_, i|
-    #   deserialized = deserialize_cell(header[:cells_data][i], header[:size_bytes])
-    #   header[:cells_data][i] = deserialized[:remainder]
-    #   pointers.push(deserialized[:pointer])
-    # end
 
     pointers.reverse_each.with_index do |pointer, i|
       pointer_index = pointers.length - i - 1
@@ -309,25 +304,22 @@ module TonSdkRuby
   end
 
   def breadth_first_sort(root)
-    root = [*root]
-    stack = root.dup
+    stack = Array.new(root)
     cells = root.map { |el| { cell: el, hash: el.hash } }
     hash_indexes = cells.map.with_index { |el, i| [el[:hash], i] }.to_h
-
-    process = lambda do |node|
-      hash = node.hash
-      index = hash_indexes[hash]
-      length = index.nil? ? cells.push(cell: node, hash: hash).size : cells.push(cells.delete_at(index)).size
-
-      stack.push(node)
-      hash_indexes[hash] = length - 1
-    end
 
     while !stack.empty?
       length = stack.length
 
       stack.each do |node|
-        node.refs.each { |ref| process.call(ref) }
+        node.refs.each do |ref|
+          hash = ref.hash
+          index = hash_indexes[hash]
+          length = index.nil? ? cells.push(cell: ref, hash: hash).size : cells.push(cells.delete_at(index)).size
+
+          stack.push(ref)
+          hash_indexes[hash] = length - 1
+        end
       end
 
       stack.shift(length)
