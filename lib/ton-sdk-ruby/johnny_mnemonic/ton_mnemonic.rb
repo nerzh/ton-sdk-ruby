@@ -88,8 +88,8 @@ module TonSdkRuby
       seed = mnemonic_to_seed(mnemonic_array, TON_KEYS_SALT, password)
       key_pair = Ed25519::SigningKey.new(seed[0, 32])
       {
-        publicKey: key_pair.verify_key.to_bytes.unpack1('H*'),
-        secretKey: key_pair.to_bytes.unpack1('H*')
+        public: key_pair.verify_key.to_bytes.unpack1('H*'),
+        secret: key_pair.to_bytes.unpack1('H*')
       }
     end
 
