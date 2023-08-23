@@ -7,7 +7,9 @@ module TonSdkRuby
   FLAG_TEST_ONLY = 0x80
 
   class Address
-    attr_reader :hash, :workchain, :bounceable, :test_only, :NONE
+    NONE = nil
+
+    attr_reader :hash, :workchain, :bounceable, :test_only
 
     def hash
       Array.new(@hash)
