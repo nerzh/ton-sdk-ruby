@@ -1,5 +1,11 @@
 require 'base64'
+require 'ed25519'
+
 module TonSdkRuby
+
+
+  INT32_MAX = 2147483647
+  INT32_MIN = -2147483648
 
   def uint_to_hex(uint)
     hex = sprintf("%#x", uint)
@@ -82,6 +88,10 @@ module TonSdkRuby
     bytes.pack('C*')
   end
 
+  def hex_to_data_string(hex)
+    bytes_to_data_string(hex_to_bytes(hex))
+  end
+
   def string_to_bytes(value)
     value.bytes
   end
@@ -109,8 +119,9 @@ module TonSdkRuby
     res
   end
 
-  INT32_MAX = 2147483647
-  INT32_MIN = -2147483648
-
-
+  def sign_cell(cell, private_key)
+    hash = hex_to_data_string(cell.hash)
+    data_key = hex_to_data_string(private_key)
+    Ed25519::SigningKey.new(data_key).sign(hash)
+  end
 end
