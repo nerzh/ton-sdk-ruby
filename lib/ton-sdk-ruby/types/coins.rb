@@ -10,10 +10,11 @@ module TonSdkRuby
       is_nano = options[:is_nano] || false
       decimals = options[:decimals] || 9
 
+      value = value.to_s
       Coins.check_coins_type(value)
       Coins.check_coins_decimals(decimals)
 
-      decimal = BigDecimal(value.to_s)
+      decimal = BigDecimal(value)
 
       if decimal.dp > decimals
         raise "Invalid Coins value, decimals places \"#{decimal.dp}\" can't be greater than selected \"#{decimals}\""
