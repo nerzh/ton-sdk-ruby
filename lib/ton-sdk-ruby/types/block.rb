@@ -76,16 +76,19 @@ module TonSdkRuby
 
       b = Builder.new
 
-      if @data.split_depth
-        b.store_uint(@data.split_depth, 5)
+      # split_depth
+      if data.split_depth
+        b.store_uint(data.split_depth, 5)
       else
         b.store_bit(0)
       end
 
-      b.store_maybe_ref(@data.special&.cell)
-      b.store_maybe_ref(@data.code)
-      b.store_maybe_ref(@data.data)
-      b.store_dict(@data.library)
+      # special
+      b.store_maybe_ref(data.special&.cell)
+      # code
+      b.store_maybe_ref(data.code)
+      b.store_maybe_ref(data.data)
+      b.store_dict(data.library)
 
       @cell = b.cell
     end
@@ -244,25 +247,25 @@ module TonSdkRuby
     def initialize(options)
       @data = options
       b = Builder.new
-      b.store_slice(@data.info.cell.parse) # info:CommonMsgInfo
+      b.store_slice(data.info.cell.parse) # info:CommonMsgInfo
 
       # init:(Maybe (Either StateInit ^StateInit))
-      if @data.init
+      if data.init
         b.store_bits([1, 0])
-        b.store_slice(@data.init.cell.parse)
+        b.store_slice(data.init.cell.parse)
       else
         b.store_bit(0)
       end
 
       # body:(Either X ^X)
-      if @data.body
-        if (b.bits.length + @data.body.bits.length + 1 <= 1023) &&
-          (b.refs.length + @data.body.refs.length <= 4)
+      if data.body
+        if (b.bits.length + data.body.bits.length + 1 <= 1023) &&
+          (b.refs.length + data.body.refs.length <= 4)
           b.store_bit(0)
-          b.store_slice(@data.body.parse)
+          b.store_slice(data.body.parse)
         else
           b.store_bit(1)
-          b.store_ref(@data.body)
+          b.store_ref(data.body)
         end
       else
         b.store_bit(0)
