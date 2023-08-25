@@ -1,5 +1,8 @@
 require 'base64'
 require 'ed25519'
+require "json"
+require 'net/http'
+require 'uri'
 
 module TonSdkRuby
 
@@ -123,5 +126,36 @@ module TonSdkRuby
     hash = hex_to_data_string(cell.hash)
     data_key = hex_to_data_string(private_key)
     Ed25519::SigningKey.new(data_key).sign(hash)
+  end
+
+  def read_json_from_link(link)
+    uri = URI.parse("#{link}")
+    request = Net::HTTP::Get.new(uri)
+
+    request.content_type = "application/json"
+    req_options = { use_ssl: uri.scheme == "https" }
+    response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
+      http.request(request)
+    end
+    JSON.parse(response.body)
+  end
+
+  def read_post_json_from_link(url, body, headers)
+    uri = URI.parse(url)
+    request = Net::HTTP::Post.new(uri)
+    request.content_type = "application/json"
+    headers.each do |name, value|
+      request[name.to_s] = value
+    end
+    request.body = JSON.generate(body)
+    req_options = { use_ssl: uri.scheme == "https" }
+    response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
+      http.request(request)
+    end
+    JSON.parse(response.body)
+  end
+
+  def require_type(name, value, type)
+    raise "#{name} must be #{type}" unless value.is_a?(type)
   end
 end
