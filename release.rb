@@ -1,9 +1,13 @@
 #!/usr/bin/env ruby
 
-script_file_path = File.expand_path(File.dirname(__FILE__))
-GEM_DIR = "#{script_file_path}/.."
+MODULE_NAME = 'TonSdkRuby'
+LIB_NAME = 'ton-sdk-ruby'
 
-version_file = "#{GEM_DIR}/lib/ton-sdk-ruby/version.rb"
+script_file_path = File.expand_path(File.dirname(__FILE__))
+# GEM_DIR = "#{script_file_path}/.."
+GEM_DIR = "#{script_file_path}"
+
+version_file = "#{GEM_DIR}/lib/#{LIB_NAME}/version.rb"
 file = File.read(version_file)
 
 p 'check version'
@@ -13,7 +17,7 @@ if file[/VERSION = "(\d+)\.(\d+)\.(\d+)"/]
   current = $3
   version = "#{major}.#{minor}.#{current.to_i + 1}"
   p version
-  data = "module TonClient\n  VERSION = \"#{version}\"\nend\n\n"
+  data = "module #{MODULE_NAME}\n  VERSION = \"#{version}\"\nend\n\n"
   p data
   p version_file
   File.open(version_file, 'wb') { |f| f.write(data) }
