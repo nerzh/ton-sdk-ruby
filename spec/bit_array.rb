@@ -21,44 +21,33 @@ describe TonSdkRuby::BitArray do
     expect(arr.send(:set_number!, index: 0, value: -3, size: 3)).to eq([true, false, true])
   end
 
-  # it 'test_store_number!' do
-  #   arr = TonSdkRuby::bit_array.new()
-  #   expect(arr.send(:store_number!, index: 0, value: 3, size: 3)).to eq([false, true, true])
+  it 'test_store_number!' do
+    arr = TonSdkRuby::bit_array.new()
+    expect(arr.send(:store_number!, index: 0, value: 3, size: 3)).to eq([false, true, true])
     
-  #   arr.send(:store_number!, index: 3, value: 3, size: 3)
-  #   expect(arr).to eq([false, true, true, false, true, true])
+    arr.send(:store_number!, index: 3, value: 3, size: 3)
+    expect(arr).to eq([false, true, true, false, true, true])
     
-  #   arr.send(:store_number!, value: 3, size: 3)
-  #   expect(arr).to eq([false, true, true, false, true, true, false, true, true])
-  # end
+    arr.send(:store_number!, value: 3, size: 3)
+    expect(arr).to eq([false, true, true, false, true, true, false, true, true])
+  end
 
   it 'test_set_byte!' do
     arr = TonSdkRuby::BitArray.new(size: 9, value: true)
     expect(arr.set_byte!(index: 1, value: 3)).to eq([true, false, false, false, false, false, false, true, true])
   end
 
-  # it 'test_store_byte!' do
-  #   arr = TonSdkRuby::bit_array.new(size: 2, value: true)
-  #   expect(arr.store_byte!(value: 3)).to eq([false, false, false, false, false, false, true, true])
+  it 'test_store_byte!' do
+    arr = TonSdkRuby::bit_array.new(size: 2, value: true)
+    expect(arr.store_byte!(value: 3)).to eq([false, false, false, false, false, false, true, true])
 
-  #   expect(arr.store_byte!(value: 3)).to eq([false, false, false, false, false, false, true, true, false, false, false, false, false, false, true, true])
-  # end
+    expect(arr.store_byte!(value: 3)).to eq([false, false, false, false, false, false, true, true, false, false, false, false, false, false, true, true])
+  end
 
   it 'test_get_byte' do
     arr = TonSdkRuby::BitArray.new(size: 16, value: true)
     expect(arr.get_byte(index: 0)).to eq(255)
     expect(arr.get_byte(index: 8)).to eq(255)
-  end
-
-  it 'test_fill_trailing' do
-    # p Mask.new(1000)
-    p augment(bits: [1, 0 ,1], divider: 8)
-    # arr = TonSdkRuby::bit_array.new()
-    # arr.store_number(index: 2, value: 3, size: 3)
-    # arr.store_sint!(value: 1, size: 1)
-    # p arr
-    # p arr.read_sint!(bits_amount: 1)
-    # expect().to eq("")
   end
 end
 
