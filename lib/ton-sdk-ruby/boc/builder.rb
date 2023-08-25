@@ -17,6 +17,7 @@ module TonSdkRuby
     end
 
     def store_slice(slice)
+      require_type('slice', slice, Slice)
       Builder.check_slice_type(slice)
 
       bits = slice.bits
@@ -32,6 +33,7 @@ module TonSdkRuby
     end
 
     def store_ref(ref)
+      require_type('ref', ref, Cell)
       Builder.check_refs_type([ref])
       check_refs_overflow(1)
       @refs.push(ref)
@@ -40,6 +42,7 @@ module TonSdkRuby
     end
 
     def store_maybe_ref(ref = nil)
+      require_type('ref', ref, Cell) if ref
       return store_bit(0) unless ref
       store_bit(1).store_ref(ref)
     end
@@ -53,20 +56,19 @@ module TonSdkRuby
     end
 
     def store_bit(bit)
+      bit = bit.to_i
       value = Builder.check_bits_type_and_normalize([bit])
-
       check_bits_overflow(1)
-      # p "+bit #{value}"
       @bits += value
 
       self
     end
 
     def store_bits(bits)
+      require_type('bits', bits, Array)
+      require_type('bit', bits[0], Integer) if bits.size > 0
       value = Builder.check_bits_type_and_normalize(bits)
-
       check_bits_overflow(value.length)
-      # p "+bits #{value}"
       @bits += value
 
       self
@@ -131,6 +133,7 @@ module TonSdkRuby
     end
 
     def store_bytes(value)
+      require_type('value', value, Array)
       check_bits_overflow(value.size * 8)
       value.each { |byte| store_uint(byte, 8) }
 
@@ -138,6 +141,7 @@ module TonSdkRuby
     end
 
     def store_string(value)
+      require_type('value', value, String)
       bytes = string_to_bytes(value)
 
       store_bytes(bytes)
@@ -145,7 +149,8 @@ module TonSdkRuby
       self
     end
 
-    def store_address(address)
+    def store_address(address = nil)
+      require_type('address', address, Address) if address
       if address.nil?
         store_bits([0, 0])
         return self
@@ -165,6 +170,7 @@ module TonSdkRuby
     end
 
     def store_coins(coins)
+      require_type('coins', coins, Coins)
       if coins.negative?
         raise 'Builder: coins value can\'t be negative.'
       end
