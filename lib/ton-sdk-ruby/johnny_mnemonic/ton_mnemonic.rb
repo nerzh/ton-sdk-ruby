@@ -13,7 +13,7 @@ module TonSdkRuby
     TON_SEED_SALT = 'TON seed version'
     TON_PASSWORD_SALT = 'TON fast seed version'
 
-    attr_reader :seed, :mnemonic_array, :keys, :password, :words_count
+    attr_accessor :seed, :mnemonic_array, :keys, :password, :words_count
 
     def initialize(password = nil, words_count = 24)
       @words_count = words_count
@@ -21,6 +21,17 @@ module TonSdkRuby
       @mnemonic_array = generate_seed(words_count, password)
       @seed = mnemonic_array.join(' ')
       @keys = mnemonic_to_private_key(mnemonic_array, password)
+    end
+
+    def self.parse(mnemonic_string, password = nil)
+      mnemonic = new
+      mnemonic_string.gsub!(/\s+/, ' ')
+      mnemonic.mnemonic_array = mnemonic_string.split(' ')
+      mnemonic.words_count = mnemonic.mnemonic_array.size
+      mnemonic.password = password
+      mnemonic.seed = mnemonic.mnemonic_array.join(' ')
+      mnemonic.keys = mnemonic.mnemonic_to_private_key(mnemonic.mnemonic_array, password)
+      mnemonic
     end
 
     def get_secure_random_number(min, max)
