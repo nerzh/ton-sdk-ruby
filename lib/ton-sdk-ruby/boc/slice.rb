@@ -226,12 +226,12 @@ module TonSdkRuby
     end
 
     def load_string(size = nil)
-      bytes = size.nil? ? load_bytes(@bits.length) : load_bytes(size)
+      bytes = size.nil? ? load_bytes(@bits.length / 8) : load_bytes(size)
       bytes_to_string(bytes)
     end
 
     def preload_string(size = nil)
-      bytes = size.nil? ? preload_bytes(@bits.length) : preload_bytes(size)
+      bytes = size.nil? ? preload_bytes(@bits.length / 8) : preload_bytes(size)
       bytes_to_string(bytes)
     end
 
