@@ -414,19 +414,6 @@ describe TonSdkRuby do
 
     expect(result).to eq(parsed)
   end
-
-  # it 'test_provider' do
-  #   # t_center = TonCenter.new("4a2f1763d241e8fa802493442cf96a60c07f1cce5355269cc69a2bee70fb41b5")
-  #   # provider = Provider.new(t_center)
-  #   # p provider.get_address_information('EQAT-mDyyqoTIaiED7egj4VNm11U57cwWX5dQysGivwXVfGw')
-  #
-  #   # Create mnemonic
-  #   mnemonic = TonMnemonic.new
-  #   p 'mnemonic', mnemonic.seed
-  #
-  #   # Create wallet_v3
-  #
-  # end
 end
 
 
