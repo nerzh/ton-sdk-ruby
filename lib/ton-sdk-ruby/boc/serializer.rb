@@ -387,7 +387,7 @@ module TonSdkRuby
 
     full_size = cells_bits.length / 8
     offset_bits = full_size.to_s(2).length
-    offset_bytes = [offset_bits / 8, 1].max
+    offset_bytes = [(offset_bits / 8.0).ceil, 1].max
     builder_size = (32 + 3 + 2 + 3 + 8) +
       (cells_bits.length) +
       ((size_bytes * 8) * 4) +
