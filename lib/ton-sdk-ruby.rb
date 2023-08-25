@@ -21,6 +21,9 @@ require_relative './ton-sdk-ruby/boc/serializer'
 require_relative './ton-sdk-ruby/johnny_mnemonic/utils'
 require_relative './ton-sdk-ruby/johnny_mnemonic/ton_mnemonic'
 
+require_relative './ton-sdk-ruby/providers/toncenter'
+require_relative './ton-sdk-ruby/providers/provider'
+
 
 module TonSdkRuby
 end
