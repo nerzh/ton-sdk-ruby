@@ -9,13 +9,19 @@ module TonSdkRuby
   class Address
     NONE = nil
 
-    attr_reader :hash, :workchain, :bounceable, :test_only
+    class Type
+      BASE64 = 'base64'
+      RAW = 'raw'
+    end
+
+    attr_reader :hash, :workchain, :bounceable, :test_only, :type
 
     def hash
       Array.new(@hash)
     end
 
     def initialize(address, options = {})
+      options = {workchain: 0, bounceable: false, test_only: false}.merge(options)
       is_address = Address.is_address?(address)
       is_encoded = Address.is_encoded?(address)
       is_raw = Address.is_raw?(address)
@@ -35,14 +41,10 @@ module TonSdkRuby
         raise 'Address: can\'t parse address. Unknown type.'
       end
 
-      workchain = options[:workchain] || result[:workchain]
-      bounceable = options[:bounceable] || result[:bounceable]
-      test_only = options[:test_only] || result[:test_only]
-
+      @workchain = options[:workchain] || result[:workchain]
+      @bounceable = options[:bounceable] || result[:bounceable]
+      @test_only = options[:test_only] || result[:test_only]
       @hash = result[:hash]
-      @workchain = workchain
-      @bounceable = bounceable
-      @test_only = test_only
     end
 
     def self.encode_tag(options)
@@ -78,7 +80,8 @@ module TonSdkRuby
         (bytes_compare(hash, address.hash) && workchain == address.workchain)
     end
 
-    def to_string(type = 'base64', options = {})
+    def to_s(options = {})
+      type = options[:type] || Type::BASE64
       workchain = options[:workchain] || self.workchain
       bounceable = options[:bounceable] || self.bounceable
       test_only = options[:test_only] || self.test_only
@@ -89,13 +92,13 @@ module TonSdkRuby
       raise 'Address: testOnly flag must be a boolean.' unless [true, false].include?(test_only)
       raise 'Address: urlSafe flag must be a boolean.' unless [true, false].include?(url_safe)
 
-      if type == 'raw'
-        "#{workchain}:#{bytes_to_hex(@hash)}"
+      if type == Type::RAW
+        "#{workchain}:#{bytes_to_hex(hash)}"
       else
         tag = Address.encode_tag(bounceable: bounceable, test_only: test_only)
-        address = [tag, workchain, *@hash]
+        address = [tag, workchain] + hash
         checksum = crc16_bytes_be(address)
-        base64 = bytes_to_base64([*address, *checksum])
+        base64 = bytes_to_base64(address + checksum)
 
         if url_safe
           base64 = base64.tr('/', '_').tr('+', '-')
@@ -106,6 +109,7 @@ module TonSdkRuby
         base64
       end
     end
+
 
 
     private
@@ -146,7 +150,8 @@ module TonSdkRuby
         bounceable: bounceable,
         test_only: test_only,
         workchain: workchain,
-        hash: hash
+        hash: hash,
+        type: Type::BASE64
       }
     end
 
@@ -155,12 +160,14 @@ module TonSdkRuby
       bounceable = value.bounceable
       test_only = value.test_only
       hash = value.hash.clone
+      type = value.type
 
       {
         bounceable: bounceable,
         test_only: test_only,
         workchain: workchain,
-        hash: hash
+        hash: hash,
+        type: type
       }
     end
 
@@ -175,7 +182,8 @@ module TonSdkRuby
         bounceable: bounceable,
         test_only: test_only,
         workchain: workchain,
-        hash: hash
+        hash: hash,
+        type: Type::RAW
       }
     end
 
@@ -191,6 +199,5 @@ module TonSdkRuby
         false
       end
     end
-
   end
 end
