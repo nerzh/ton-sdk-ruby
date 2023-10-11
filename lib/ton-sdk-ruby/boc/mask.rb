@@ -1,5 +1,6 @@
 module TonSdkRuby
   class Mask
+    extend TonSdkRuby
 
     attr_accessor :hash_index, :hash_count, :value
 

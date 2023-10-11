@@ -1,6 +1,8 @@
 module TonSdkRuby
 
   class TonCenter
+    extend TonSdkRuby
+
     URL = 'https://toncenter.com/api/v2/jsonRPC'
     attr_accessor :api_key, :url
 

@@ -3,6 +3,8 @@ require 'bigdecimal'
 module TonSdkRuby
 
   class Coins
+    extend TonSdkRuby
+
     attr_reader :value, :decimals, :multiplier
     private :value, :decimals, :multiplier
 

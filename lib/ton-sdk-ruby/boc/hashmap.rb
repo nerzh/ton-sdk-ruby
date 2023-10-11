@@ -1,6 +1,8 @@
 module TonSdkRuby
 
   class Hashmap
+    extend TonSdkRuby
+
     attr_reader :hashmap, :key_size
 
     def initialize(key_size, options = {})

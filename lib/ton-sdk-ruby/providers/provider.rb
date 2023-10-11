@@ -1,5 +1,7 @@
 module TonSdkRuby
   class Provider
+    extend TonSdkRuby
+
     attr_accessor :provider
 
     def initialize(provider)

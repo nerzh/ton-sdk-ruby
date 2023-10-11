@@ -1,5 +1,7 @@
 module TonSdkRuby
   class TickTockOptions
+    extend TonSdkRuby
+
     attr_accessor :tick, :tock
 
     def initialize(tick, tock)

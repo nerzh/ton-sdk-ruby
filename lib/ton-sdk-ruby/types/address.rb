@@ -7,6 +7,8 @@ module TonSdkRuby
   FLAG_TEST_ONLY = 0x80
 
   class Address
+    extend TonSdkRuby
+
     NONE = nil
 
     class Type

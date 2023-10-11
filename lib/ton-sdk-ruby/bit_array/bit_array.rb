@@ -1,6 +1,8 @@
 module TonSdkRuby
+
   class BitArray < Array
-    
+    extend TonSdkRuby
+
     attr_accessor :read_cursor
 
     def initialize(size: 0, value: false)
@@ -40,7 +42,7 @@ module TonSdkRuby
     end
 
     def store_sint!(value: nil, size: nil)
-      # i.e. signed int and one first bit reserved for sign size = (size - 1) 
+      # i.e. signed int and one first bit reserved for sign size = (size - 1)
       # and restrict for max value = value >= (1 << size - 1)
       max_sint = (1 << size - 1)
       raise "Wrong value #{value}" if value < -max_sint || value >= max_sint
@@ -142,28 +144,3 @@ class TrueClass
     1
   end
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,6 +1,8 @@
 module TonSdkRuby
 
   class Slice
+    extend TonSdkRuby
+
     def initialize(bits, refs)
       @bits = bits
       @refs = refs
