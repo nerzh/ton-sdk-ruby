@@ -24,6 +24,10 @@ module TonSdkRuby
       send_request('getAddressInformation', {address: address})
     end
 
+    def get_extended_address_information(address)
+      send_request('getExtendedAddressInformation', {address: address})
+    end
+
     def get_address_balance(address)
       send_request('getAddressBalance', {address: address})
     end
