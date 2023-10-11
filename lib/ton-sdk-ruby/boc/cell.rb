@@ -176,6 +176,9 @@ module TonSdkRuby
 
 
   class Cell
+    extend TonSdkRuby
+    include TonSdkRuby
+
     attr_accessor :bits, :refs, :type, :mask
     attr_reader :hashes, :depths
     private :bits, :refs, :type, :mask, :hashes, :depths
