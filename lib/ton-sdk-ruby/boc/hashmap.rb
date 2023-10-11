@@ -2,6 +2,7 @@ module TonSdkRuby
 
   class Hashmap
     extend TonSdkRuby
+    include TonSdkRuby
 
     attr_reader :hashmap, :key_size
 

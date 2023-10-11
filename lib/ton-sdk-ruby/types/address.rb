@@ -8,6 +8,7 @@ module TonSdkRuby
 
   class Address
     extend TonSdkRuby
+    include TonSdkRuby
 
     NONE = nil
 

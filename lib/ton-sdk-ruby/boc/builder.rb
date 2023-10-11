@@ -1,6 +1,7 @@
 module TonSdkRuby
   class Builder
     extend TonSdkRuby
+    include TonSdkRuby
 
     attr_reader :size, :refs, :bits
 

@@ -1,6 +1,7 @@
 module TonSdkRuby
   class Provider
     extend TonSdkRuby
+    include TonSdkRuby
 
     attr_accessor :provider
 

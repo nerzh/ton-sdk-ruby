@@ -2,6 +2,7 @@ module TonSdkRuby
 
   class BitArray < Array
     extend TonSdkRuby
+    include TonSdkRuby
 
     attr_accessor :read_cursor
 

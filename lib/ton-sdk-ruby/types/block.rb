@@ -1,6 +1,7 @@
 module TonSdkRuby
   class TickTockOptions
     extend TonSdkRuby
+    include TonSdkRuby
 
     attr_accessor :tick, :tock
 
@@ -11,6 +12,9 @@ module TonSdkRuby
   end
 
   class SimpleLibOptions
+    extend TonSdkRuby
+    include TonSdkRuby
+
     attr_accessor :public, :root
 
     def initialize(public_value, root_value)
@@ -20,6 +24,9 @@ module TonSdkRuby
   end
 
   class TickTock
+    extend TonSdkRuby
+    include TonSdkRuby
+
     attr_reader :data, :cell
 
     def initialize(options)
@@ -39,6 +46,9 @@ module TonSdkRuby
   end
 
   class SimpleLib
+    extend TonSdkRuby
+    include TonSdkRuby
+
     attr_reader :data, :cell
 
     def initialize(options)
@@ -59,6 +69,9 @@ module TonSdkRuby
   end
 
   class StateInitOptions
+    extend TonSdkRuby
+    include TonSdkRuby
+
     attr_accessor :split_depth, :special, :code, :data, :library
 
     def initialize(options = {})
@@ -71,6 +84,9 @@ module TonSdkRuby
   end
 
   class StateInit
+    extend TonSdkRuby
+    include TonSdkRuby
+
     attr_reader :data, :cell
 
     def initialize(state_init_options)
@@ -115,6 +131,9 @@ module TonSdkRuby
   end
 
   class IntMsgInfo
+    extend TonSdkRuby
+    include TonSdkRuby
+
     attr_accessor :tag, :ihr_disabled, :bounce, :bounced, :src, :dest, :value,
                   :ihr_fee, :fwd_fee, :created_lt, :created_at
 
@@ -134,6 +153,9 @@ module TonSdkRuby
   end
 
   class ExtInMsgInfo
+    extend TonSdkRuby
+    include TonSdkRuby
+
     attr_accessor :tag, :src, :dest, :import_fee
 
     def initialize(options = {})
@@ -145,6 +167,9 @@ module TonSdkRuby
   end
 
   class CommonMsgInfo
+    extend TonSdkRuby
+    include TonSdkRuby
+
     attr_reader :data, :cell
 
     def initialize(data)
@@ -234,6 +259,9 @@ module TonSdkRuby
   end
 
   class MessageOptions
+    extend TonSdkRuby
+    include TonSdkRuby
+
     attr_accessor :info, :init, :body
 
     def initialize(options = {})
@@ -244,6 +272,9 @@ module TonSdkRuby
   end
 
   class Message
+    extend TonSdkRuby
+    include TonSdkRuby
+
     attr_reader :data, :cell
 
     def initialize(options)
@@ -296,6 +327,9 @@ module TonSdkRuby
   end
 
   class ActionSendMsg
+    extend TonSdkRuby
+    include TonSdkRuby
+
     attr_reader :tag, :mode, :out_msg
 
     def initialize(options)
@@ -306,6 +340,9 @@ module TonSdkRuby
   end
 
   class ActionSetCode
+    extend TonSdkRuby
+    include TonSdkRuby
+
     attr_reader :tag, :new_code
 
     def initialize(options)
@@ -315,6 +352,9 @@ module TonSdkRuby
   end
 
   class OutAction
+    extend TonSdkRuby
+    include TonSdkRuby
+
     def initialize(data)
       case data.tag
       when 'action_send_msg' then action_send_msg(data)
@@ -363,6 +403,9 @@ module TonSdkRuby
   end
 
   class OutListOptions
+    extend TonSdkRuby
+    include TonSdkRuby
+
     attr_reader :actions
 
     def initialize(options)
@@ -371,6 +414,8 @@ module TonSdkRuby
   end
 
   class OutList
+    extend TonSdkRuby
+    include TonSdkRuby
 
     attr_reader :cell, :data
     def initialize(action)

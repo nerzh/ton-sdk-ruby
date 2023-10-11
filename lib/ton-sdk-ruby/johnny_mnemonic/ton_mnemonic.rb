@@ -6,6 +6,7 @@ require "ed25519"
 
 module TonSdkRuby
   class TonMnemonic
+    extend TonSdkRuby
     include TonSdkRuby
 
     TON_PBKDF_ITERATIONS = 100_000
