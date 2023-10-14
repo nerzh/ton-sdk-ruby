@@ -142,6 +142,14 @@ describe TonSdkRuby do
     b.store_var_int(0, 8)
     expect(b.cell.hash).to eq("eb58904b617945cdf4f33042169c462cd36cf1772a2229f06171fd899e920b7f")
 
+    # VarUInt
+    b = Builder.new
+    b.store_var_uint(1329227995784915872903807060280344575, 16)
+    expect(b.cell.hash).to eq("07d470f83cea8b41383aab0113b84f4be3842bc6ec0c46d84664a647d5550dc9")
+
+    b = Builder.new
+    expect{b.store_var_uint(1329227995784915872903807060280344575 + 1, 16)}.to raise_error(StandardError)
+
     # String
     b = Builder.new
     b.store_string("Hello")
@@ -413,6 +421,11 @@ describe TonSdkRuby do
     parsed = HashmapE.parse(16, Slice.parse(boc_fift), deserializers: deserializers).each { |key, value|  {key: key, value: value} }
 
     expect(result).to eq(parsed)
+  end
+
+  it 'Test Johnny Mnemonic' do
+    mnemonic = TonMnemonic.new
+    expect(mnemonic.mnemonic_array.size).to eq(24)
   end
 end
 

@@ -106,6 +106,11 @@ module TonSdkRuby
       size = (Math.log2(length)).ceil
       size_bytes = (int.to_s(2).length.to_f / 8).ceil
       size_bits = size_bytes * 8
+      int_bits = 1 << (size_bits - 1)
+
+      if int < -int_bits || int >= int_bits
+        raise StandardError.new("Builder: can't store an VarInt, because its value allocates more space than provided.")
+      end
 
       check_bits_overflow(size + size_bits)
 
@@ -123,6 +128,10 @@ module TonSdkRuby
       size = (Math.log2(length)).ceil
       size_bytes = (uint.to_s(2).length.to_f / 8).ceil
       size_bits = size_bytes * 8
+
+      if uint < 0 || uint >= (1 << size_bits)
+        raise StandardError.new("Builder: can't store an VarUInt, because its value allocates more space than provided.")
+      end
 
       check_bits_overflow(size + size_bits)
 

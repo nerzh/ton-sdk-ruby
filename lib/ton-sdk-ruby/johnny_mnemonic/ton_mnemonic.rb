@@ -38,7 +38,6 @@ module TonSdkRuby
     def get_secure_random_number(min, max)
       range = max - min
       bits_needed = Math.log2(range).ceil
-      raise 'Range is too large' if bits_needed > 53
       bytes_needed = (bits_needed / 8.0).ceil
       mask = (2 ** bits_needed) - 1
 
@@ -88,7 +87,7 @@ module TonSdkRuby
       current_file_path = File.expand_path(File.dirname(__FILE__))
       bip0039en = JSON.parse(File.read("#{current_file_path}/words/english.json"))
       length.times do
-        index = get_secure_random_number(0, length)
+        index = get_secure_random_number(0, bip0039en.size)
         mnemonic_array.push(bip0039en[index])
       end
 
