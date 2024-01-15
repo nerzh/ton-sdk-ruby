@@ -98,7 +98,7 @@ module TonSdkRuby
         "#{workchain}:#{bytes_to_hex(hash)}"
       else
         tag = Address.encode_tag(bounceable: bounceable, test_only: test_only)
-        address = [tag, workchain] + hash
+        address = [tag, [workchain].pack("c*").unpack("C*").last] + hash
         checksum = crc16_bytes_be(address)
         base64 = bytes_to_base64(address + checksum)
 
