@@ -231,6 +231,14 @@ describe TonSdkRuby do
     expect(a.test_only).to eq(true)
     expected = TonSdkRuby.hex_to_bytes(@address_raw.split(":").last)
     expect(a.hash).to eq(expected)
+
+    a = Address.new("Ef8w0Zxb55PR2HtfD793UTXggGNNZJcTKh3bh4u4X-nMWGK-")
+    expect(a.workchain).to eq(-1)
+    expect(a.bounceable).to eq(true)
+    expect(a.test_only).to eq(false)
+    address_raw = "-1:30d19c5be793d1d87b5f0fbf775135e080634d6497132a1ddb878bb85fe9cc58"
+    expected = TonSdkRuby.hex_to_bytes(address_raw.split(":").last)
+    expect(a.hash).to eq(expected)
   end
 
   it 'test_slice' do

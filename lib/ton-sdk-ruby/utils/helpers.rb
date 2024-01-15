@@ -30,6 +30,8 @@ module TonSdkRuby
   end
 
   def bytes_to_uint(bytes)
+    bytes = bytes.is_a?(Array) ? bytes : bytes.unpack("C*")
+
     uint = bytes.each_with_index.inject(0) do |acc, (byte, i)|
       acc *= 256
       acc += byte

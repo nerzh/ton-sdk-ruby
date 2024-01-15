@@ -24,7 +24,6 @@ module TonSdkRuby
     end
 
     def initialize(address, options = {})
-      options = {workchain: 0, bounceable: false, test_only: false}.merge(options)
       is_address = Address.is_address?(address)
       is_encoded = Address.is_encoded?(address)
       is_raw = Address.is_raw?(address)
@@ -139,9 +138,8 @@ module TonSdkRuby
 
       buffer = address.shift(2).pack('C2')
 
-      tag_and_wc = buffer.unpack('CS>')
-      tag = tag_and_wc.first
-      workchain = tag_and_wc.last.to_i
+      tag = buffer.unpack('C*').first
+      workchain = buffer.unpack('c*').last
 
       hash = address.shift(32)
 
