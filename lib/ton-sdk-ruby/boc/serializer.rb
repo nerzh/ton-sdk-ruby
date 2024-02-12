@@ -143,7 +143,7 @@ module TonSdkRuby
     end
 
     raise 'Not enough bytes for cells data' if bytes.length < header[:tot_cells_size]
-    # byebug
+    
     header[:cells_data] = bytes.shift(header[:tot_cells_size])
 
     if header[:hash_crc32]

@@ -134,7 +134,7 @@ module TonSdkRuby
       end
 
       check_bits_overflow(size + size_bits)
-      byebug
+      
       if uint == 0
         store_uint(0, size)
       else
