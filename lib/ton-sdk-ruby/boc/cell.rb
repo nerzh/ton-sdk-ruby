@@ -229,7 +229,6 @@ module TonSdkRuby
     # Calculate depth descriptor
     def self.get_depth_descriptor(depth)
       descriptor = [(depth / 256).floor, depth % 256].pack('C*')
-      byebug
       bytes_to_bits(descriptor)
     end
 
@@ -348,11 +347,9 @@ module TonSdkRuby
           depth_repr.concat(Cell.get_depth_descriptor(ref_depth))
           hash_repr.concat(hex_to_bits(ref_hash))
           depth = [depth, ref_depth].max
-          byebug
         end
         representation = refs_descriptor + bits_descriptor + data + depth_repr + hash_repr
-
-        byebug
+        
         if @refs.length.positive? && depth >= 1024
           raise 'Cell depth can\'t be more than 1024'
         end
