@@ -72,7 +72,6 @@ module TonSdkRuby
 
   def bits_to_bytes(bits)
     return [].pack("C*") if bits.empty?
-
     hex_to_bytes(bits_to_hex(bits))
   end
 

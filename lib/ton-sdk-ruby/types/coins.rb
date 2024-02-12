@@ -7,7 +7,6 @@ module TonSdkRuby
     include TonSdkRuby
 
     attr_reader :value, :decimals, :multiplier
-    private :value, :decimals, :multiplier
 
     def initialize(value, options = {})
       is_nano = options[:is_nano] || false

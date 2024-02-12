@@ -4,6 +4,7 @@ include TonSdkRuby
 
 describe TonSdkRuby do
   before(:all) do
+    Builder.new.cell
     @address_raw = "0:93c5a151850b16de3cb2d87782674bc5efe23e6793d343aa096384aafd70812c"
 
     options = {
@@ -20,6 +21,13 @@ describe TonSdkRuby do
   end
 
   it 'test_builder' do
+    b = Builder.new
+    b.store_coins(Coins.from_nano(2 ** 120 - 1))
+    expect(b.cell.hash).to eq("07d470f83cea8b41383aab0113b84f4be3842bc6ec0c46d84664a647d5550dc9")
+    # Hash
+    b = Builder.new
+    expect(b.cell.hash).to eq("96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7")
+
     # UInt
     b = Builder.new
     b.store_uint(200, 30)
@@ -42,6 +50,42 @@ describe TonSdkRuby do
     b = Builder.new
     b.store_uint(2 ** 1023 - 1 , 1023)
     expect(b.cell.hash).to eq("82970d4664b7683c3d14d49b1f9ff34966128170301a7becc27af1adbe6a31c9")
+
+    # Int
+    b = Builder.new
+    b.store_int(-1, 8)
+    expect(b.cell.hash).to eq("81f3b92f222078b1606cfc3eebfee22216cc40ac99e6524b00fbaa933a6bcd47")
+
+    b = Builder.new
+    b.store_int(-2 ** 31, 32)
+    expect(b.cell.hash).to eq("fc0483d2794fdfcf966ed72ff8a05edd06dce073f181ffa7dda71d80ac3119de")
+
+    b = Builder.new
+    expect{b.store_int(-2 ** 31 - 1, 32)}.to raise_error(StandardError)
+
+    b = Builder.new
+    b.store_int(2 ** 31 - 1, 32)
+    expect(b.cell.hash).to eq("dfd15d01ae93bac2ac4f4637ac40b957cda2f5036fe1c702b7fe3bd529be8063")
+
+    b = Builder.new
+    expect{b.store_int(2 ** 31, 32)}.to raise_error(StandardError)
+
+    # VarInt
+    b = Builder.new
+    b.store_var_int(0, 8)
+    expect(b.cell.hash).to eq("eb58904b617945cdf4f33042169c462cd36cf1772a2229f06171fd899e920b7f")
+
+    # VarUInt
+    b = Builder.new
+    b.store_var_uint(1329227995784915872903807060280344575, 16)
+    expect(b.cell.hash).to eq("07d470f83cea8b41383aab0113b84f4be3842bc6ec0c46d84664a647d5550dc9")
+
+    b = Builder.new
+    b.store_var_uint(13, 16)
+    expect(b.cell.hash).to eq("12ca2776e7494ea13bb91efbd3fff58becb930529fd54531f3e89a78ded9e5d1")
+
+    b = Builder.new
+    expect{b.store_var_uint(1329227995784915872903807060280344575 + 1, 16)}.to raise_error(StandardError)
 
     # Coins
     b = Builder.new
@@ -117,38 +161,6 @@ describe TonSdkRuby do
 
     b = Builder.new
     expect{b.store_bytes(Array.new(128) { 0 })}.to raise_error(StandardError)
-
-    # Int
-    b = Builder.new
-    b.store_int(-1, 8)
-    expect(b.cell.hash).to eq("81f3b92f222078b1606cfc3eebfee22216cc40ac99e6524b00fbaa933a6bcd47")
-
-    b = Builder.new
-    b.store_int(-2 ** 31, 32)
-    expect(b.cell.hash).to eq("fc0483d2794fdfcf966ed72ff8a05edd06dce073f181ffa7dda71d80ac3119de")
-
-    b = Builder.new
-    expect{b.store_int(-2 ** 31 - 1, 32)}.to raise_error(StandardError)
-
-    b = Builder.new
-    b.store_int(2 ** 31 - 1, 32)
-    expect(b.cell.hash).to eq("dfd15d01ae93bac2ac4f4637ac40b957cda2f5036fe1c702b7fe3bd529be8063")
-
-    b = Builder.new
-    expect{b.store_int(2 ** 31, 32)}.to raise_error(StandardError)
-
-    # VarInt
-    b = Builder.new
-    b.store_var_int(0, 8)
-    expect(b.cell.hash).to eq("eb58904b617945cdf4f33042169c462cd36cf1772a2229f06171fd899e920b7f")
-
-    # VarUInt
-    b = Builder.new
-    b.store_var_uint(1329227995784915872903807060280344575, 16)
-    expect(b.cell.hash).to eq("07d470f83cea8b41383aab0113b84f4be3842bc6ec0c46d84664a647d5550dc9")
-
-    b = Builder.new
-    expect{b.store_var_uint(1329227995784915872903807060280344575 + 1, 16)}.to raise_error(StandardError)
 
     # String
     b = Builder.new
@@ -438,6 +450,46 @@ describe TonSdkRuby do
   it 'Test Johnny Mnemonic' do
     mnemonic = TonMnemonic.new
     expect(mnemonic.mnemonic_array.size).to eq(24)
+  end
+
+  it 'Test Bits' do
+    bits = [1,0,1,1,1]
+    new_bits = augment(bits)
+    expect(new_bits).to eq([1,0,1,1,1,1,0,0])
+
+    bits = [1,0,1,1,1,0,0,0]
+    new_bits = rollback(bits)
+    expect(new_bits).to eq([1,0,1,1])
+  end
+
+  it 'Test CRC' do
+    data = [1,0,1,1,1]
+    expect(crc16(data)).to eq(48753)
+    expect(crc32c(data)).to eq(971739283)
+    expect(crc16_bytes_be(data)).to eq([190, 113])
+    expect(crc32c_bytes_le(data)).to eq([147, 144, 235, 57])
+  end
+
+  it 'Test Mnemonic' do
+    mnemonic = TonMnemonic.new
+    expect(mnemonic.seed).to eq('')
+  end
+
+  it 'Test SHA' do
+    data = [1,0,1,1,1]
+    expect(sha256(data)).to eq('4bd22da7d13bbe6f159914f6b38fd1c4530e84b50112eeabd69b999b7218e4c3')
+    expect(sha512(data)).to eq('493580872d46567d51ed2f1be8c88fb62aca3f8c4050a3fd04400abc4dd95cc67006b070e71d2a26fc1a538448d74ee2a3b8224a7b6b1b1ab0499b356da89f3b')
+  end
+
+  it 'Test Helpers' do
+    data = [1,0,1,1,1]
+    expect(bytes_to_string(data)).to eq("\u0001\u0000\u0001\u0001\u0001")
+
+    data = [1,0,1,1,1]
+    expect(bytes_to_data_string(data)).to eq("\u0001\u0000\u0001\u0001\u0001")
+
+    hex = '4bd22da7d13bbe6f159914f6b38fd1c4530e84b50112eeabd69b999b7218e4c3'
+    expect(hex_to_data_string(hex)).to eq("\u0001\u0000\u0001\u0001\u0001")
   end
 end
 
