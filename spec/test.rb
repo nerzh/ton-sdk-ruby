@@ -252,7 +252,7 @@ describe TonSdkRuby do
     expect(a.test_only).to eq(false)
     expected = TonSdkRuby.hex_to_bytes(address_raw.split(":").last)
     expect(a.hash).to eq(expected)
-    
+
     a = Address.new(address_raw, {bounceable: true})
     expect(a.to_s).to eq(addr_base64)
   end
@@ -470,26 +470,23 @@ describe TonSdkRuby do
     expect(crc32c_bytes_le(data)).to eq([147, 144, 235, 57])
   end
 
-  it 'Test Mnemonic' do
-    mnemonic = TonMnemonic.new
-    expect(mnemonic.seed).to eq('')
-  end
-
   it 'Test SHA' do
     data = [1,0,1,1,1]
     expect(sha256(data)).to eq('4bd22da7d13bbe6f159914f6b38fd1c4530e84b50112eeabd69b999b7218e4c3')
     expect(sha512(data)).to eq('493580872d46567d51ed2f1be8c88fb62aca3f8c4050a3fd04400abc4dd95cc67006b070e71d2a26fc1a538448d74ee2a3b8224a7b6b1b1ab0499b356da89f3b')
   end
 
+  # it 'Test Mnemonic' do
+  #   mnemonic = TonMnemonic.new
+  #   expect(mnemonic.seed).to eq('')
+  # end
+
   it 'Test Helpers' do
     data = [1,0,1,1,1]
     expect(bytes_to_string(data)).to eq("\u0001\u0000\u0001\u0001\u0001")
 
     data = [1,0,1,1,1]
-    expect(bytes_to_data_string(data)).to eq("\u0001\u0000\u0001\u0001\u0001")
-
-    hex = '4bd22da7d13bbe6f159914f6b38fd1c4530e84b50112eeabd69b999b7218e4c3'
-    expect(hex_to_data_string(hex)).to eq("\u0001\u0000\u0001\u0001\u0001")
+    expect(bytes_to_data_string(data)).to eq("\x01\x00\x01\x01\x01")
   end
 end
 

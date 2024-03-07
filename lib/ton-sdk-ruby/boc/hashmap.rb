@@ -133,13 +133,11 @@ module TonSdkRuby
 
       edge = Builder.new
       label = serialize_label(nodes)
-
       edge.store_bits(label)
 
       # hmn_leaf#_
       if nodes.length == 1
         leaf = serialize_leaf(nodes[0])
-
         edge.store_slice(leaf.parse)
       end
 
@@ -195,7 +193,6 @@ module TonSdkRuby
           break
         end
       end
-
       same_bits_length = same_bits_index.nil? ? first.length : same_bits_index
 
       if first[0] != last[0] || m == 0
@@ -217,13 +214,11 @@ module TonSdkRuby
 
       # Sort labels by their length
       labels.sort_by! { |el| el[:label].length }
-
       # Get most compact label
       choosen = labels[0]
 
       # Remove label bits from nodes keys
       nodes.each { |key, _| key.shift(choosen[:bits]) }
-
       choosen[:label]
     end
 
@@ -280,10 +275,8 @@ module TonSdkRuby
 
       if key.length == key_size
         value = Builder.new.store_slice(edge).cell
-
         return nodes.concat([[key, value]])
       end
-
       edge.refs.each_with_index do |_r, i|
         fork_edge = edge.load_ref.parse
         fork_key = key + [i]

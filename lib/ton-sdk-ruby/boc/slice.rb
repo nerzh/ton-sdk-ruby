@@ -250,12 +250,13 @@ module TonSdkRuby
         # 2 bits flag, 1 bit anycast, 8 bits workchain, 256 bits address hash
         size = 2 + 1 + 8 + 256
         # Slice 2 because we don't need flag bits
-        bits = load_bits(size)[2..-1]
+        loaded_bits = load_bits(size)
+        bits = loaded_bits[2..-1]
 
         # Anycast is currently unused
         _anycast = bits.shift
-
         workchain = bits_to_int_uint(bits.shift(8), type: 'int')
+
         hash = bits_to_hex(bits.shift(256))
         raw = "#{workchain}:#{hash}"
 

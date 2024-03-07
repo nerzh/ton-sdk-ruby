@@ -217,7 +217,6 @@ module TonSdkRuby
     def cell(type = CellType::Ordinary)
       # Use getters to get copies of arrays
       cell = Cell.new(bits: bits, refs: refs, type: type)
-
       cell
     end
 

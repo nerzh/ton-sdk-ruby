@@ -7,32 +7,6 @@ module TonSdkRuby
   LEAN_BOC_MAGIC_PREFIX = hex_to_bytes('68FF65F3')
   LEAN_BOC_MAGIC_PREFIX_CRC = hex_to_bytes('ACC3A728')
 
-  class BOCOptions
-    attr_accessor :has_index, :hash_crc32, :has_cache_bits, :topological_order, :flags
-  end
-
-  class BocHeader
-    attr_accessor :has_index, :hash_crc32, :has_cache_bits, :flags, :size_bytes,
-                  :offset_bytes, :cells_num, :roots_num, :absent_num,
-                  :tot_cells_size, :root_list, :cells_data
-  end
-
-  class CellNode
-    attr_accessor :cell, :children, :scanned
-  end
-
-  class BuilderNode
-    attr_accessor :builder, :indent
-  end
-
-  class CellPointer
-    attr_accessor :cell, :type, :builder, :refs
-  end
-
-  class CellData
-    attr_accessor :pointer, :remainder
-  end
-
   def deserialize_fift(data)
     raise 'Can\'t deserialize. Empty fift hex.' if data.nil? || data.empty?
 
@@ -226,12 +200,12 @@ module TonSdkRuby
       pointers.push(deserialized[:pointer])
     end
 
-    pointers.reverse_each.with_index do |pointer, i|
-      pointer_index = pointers.length - i - 1
-      cell_builder = pointer[:builder]
-      cell_type = pointer[:type]
+    pointers.each_with_index do |_, index|
+      pointer_index = pointers.length - index - 1
+      cell_builder = pointers[pointer_index][:builder]
+      cell_type = pointers[pointer_index][:type]
 
-      pointer[:refs].each do |ref_index|
+      pointers[pointer_index][:refs].each do |ref_index|
         ref_builder = pointers[ref_index][:builder]
         ref_type = pointers[ref_index][:type]
 
@@ -247,7 +221,6 @@ module TonSdkRuby
       if cell_type == CellType::MerkleProof || cell_type == CellType::MerkleUpdate
         has_merkle_proofs = true
       end
-
       pointers[pointer_index][:cell] = cell_builder.cell(cell_type)
     end
 

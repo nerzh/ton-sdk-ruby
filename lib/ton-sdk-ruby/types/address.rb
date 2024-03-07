@@ -24,9 +24,9 @@ module TonSdkRuby
     end
 
     def initialize(address, options = {})
-      is_address = Address.is_address?(address)
-      is_encoded = Address.is_encoded?(address)
-      is_raw = Address.is_raw?(address)
+      is_address = Address.is_address?(address.clone)
+      is_encoded = Address.is_encoded?(address.clone)
+      is_raw = Address.is_raw?(address.clone)
 
       case true
       when is_address
