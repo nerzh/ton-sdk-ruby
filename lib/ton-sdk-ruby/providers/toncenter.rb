@@ -20,8 +20,19 @@ module TonSdkRuby
       read_post_json_from_link(url, body, headers)
     end
 
+    def send_boc(boc)
+      send_request('sendBoc', {boc: boc})
+    end
+
     def get_address_information(address)
       send_request('getAddressInformation', {address: address})
+    end
+
+    def get_transactions(address, archival, limit, lt, hash, to_lt)
+      params = {
+        address: address, archival: archival, limit: limit, lt: lt, hash: hash, to_lt: to_lt
+      }
+      send_request('getTransactions', params)
     end
 
     def get_extended_address_information(address)
@@ -40,22 +51,11 @@ module TonSdkRuby
       send_request('getTokenData', {address: address})
     end
 
-    def get_transactions(address, archival, limit, lt, hash, to_lt)
-      params = {
-        address: address, archival: archival, limit: limit, lt: lt, hash: hash, to_lt: to_lt
-      }
-      send_request('getTransactions', params)
-    end
-
     def run_get_method(address, method, stack = [])
       params = {
         address: address, method: method, stack: stack
       }
       send_request('runGetMethod', params)
-    end
-
-    def send_boc(boc)
-      send_request('sendBoc', {boc: boc})
     end
 
     def estimate_fee(address, body, init_code, init_data, ignore_chksig = false)

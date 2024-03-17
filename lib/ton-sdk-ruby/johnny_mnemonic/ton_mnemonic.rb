@@ -43,12 +43,14 @@ module TonSdkRuby
 
       loop do
         res = SecureRandom.random_bytes(bytes_needed)
-        power = (bytes_needed - 1) * 8
         number_value = 0
+
+        power = (bytes_needed - 1) * 8
         res.each_byte do |byte|
           number_value += byte.ord * (2 ** power)
           power -= 8
         end
+
         number_value = number_value & mask # Truncate
         return min + number_value if number_value < range
       end
