@@ -325,7 +325,7 @@ module TonSdkRuby
       serialize
     end
 
-    def self.parse(key_size, slice, options = nil)
+    def self.parse(key_size, slice, options = {})
       deserialize(key_size, slice, options)
     end
 
@@ -349,7 +349,7 @@ module TonSdkRuby
   end
 
   class HashmapE < Hashmap
-    def initialize(key_size, options = nil)
+    def initialize(key_size, options = {})
       super(key_size, options)
     end
 
@@ -366,7 +366,7 @@ module TonSdkRuby
       end
     end
 
-    def self.deserialize(key_size, slice, options = nil)
+    def self.deserialize(key_size, slice, options = {})
       if slice.bits.length != 1
         raise 'HashmapE: bad hashmap size flag.'
       end
@@ -386,7 +386,7 @@ module TonSdkRuby
       end
     end
 
-    def self.parse(key_size, slice, options = nil)
+    def self.parse(key_size, slice, options = {})
       deserialize(key_size, slice, options)
     end
   end
