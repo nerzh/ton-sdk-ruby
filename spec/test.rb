@@ -20,6 +20,14 @@ describe TonSdkRuby do
     @dict.set(32781, 169)
   end
 
+  it 'test_cell' do
+    seed = "367f30796d66c3119c7674dd30e362aca729c46d809102d4dd135b9451e6169f"
+    cell = Builder.new.store_string("test sign").cell
+    signature = sign_cell(cell, seed)
+
+    expect(bytes_to_hex(signature)).to eq("34f16f4074c4cb10b10bf909f9d8444c37bf683ae6f92f07a220fab5544034ecf871d5be7b51c0ef80849aa3e8198eb372967352017a6e6d763406da82d83c08")
+  end
+
   it 'test_builder' do
     b = Builder.new
     b.store_coins(Coins.from_nano(2 ** 120 - 1))
