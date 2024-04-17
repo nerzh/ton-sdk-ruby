@@ -392,8 +392,8 @@ module TonSdkRuby
           .store_uint(0, size_bytes * 8)
 
     if has_index
-      size_index.each do |index|
-        result.store_uint(index, offset_bytes * 8)
+      cells_list.each_with_index do |_, index|
+        result.store_uint(size_index[index], offset_bytes * 8)
       end
     end
 
