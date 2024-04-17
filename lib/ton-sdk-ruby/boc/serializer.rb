@@ -277,31 +277,40 @@ module TonSdkRuby
   end
 
   def breadth_first_sort(root)
-    stack = Array.new(root)
+    stack = root.dup
     cells = root.map { |el| { cell: el, hash: el.hash } }
     hash_indexes = cells.map.with_index { |el, i| [el[:hash], i] }.to_h
 
-    while !stack.empty?
-      length = stack.length
+    while stack.size > 0 do
+      length = stack.size
 
       stack.each do |node|
         node.refs.each do |ref|
           hash = ref.hash
           index = hash_indexes[hash]
-          length = index.nil? ? cells.push(cell: ref, hash: hash).size : cells.push(cells.delete_at(index)).size
+          if index != nil
+            val = cells[index]
+            cells[index] = nil
+            cells << val
+          else
+            cells << {cell: ref, hash: hash}
+          end
+          len = cells.size
 
           stack.push(ref)
-          hash_indexes[hash] = length - 1
+          hash_indexes[hash] = len - 1
         end
       end
 
       stack.shift(length)
     end
 
+    idx = 0
     result = cells.each_with_index.reduce({ cells: [], hashmap: {} }) do |acc, (el, i)|
       unless el.nil?
         acc[:cells].push(el[:cell])
-        acc[:hashmap][el[:hash]] = i
+        acc[:hashmap][el[:hash]] = idx
+        idx += 1
       end
 
       acc

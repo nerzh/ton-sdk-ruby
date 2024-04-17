@@ -188,7 +188,7 @@ module TonSdkRuby
     def int_msg_info(data)
       b = Builder.new
                  .store_bits([0]) # int_msg_info$0
-                 .store_bit(data.ihr_disabled || false) # ihr_disabled:Bool
+                 .store_bit(data.ihr_disabled || true) # ihr_disabled:Bool
                  .store_bit(data.bounce) # bounce:Bool
                  .store_bit(data.bounced || false) # bounced:Bool
                  .store_address(data.src || Address::NONE) # src:MsgAddressInt
